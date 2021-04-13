@@ -1,44 +1,82 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {View, ScrollView, StyleSheet,Text, TextInput, TouchableOpacity} from 'react-native';
-import Button from '/Users/mac/Desktop/reactnative/loginPage/loginpage/src/components/Button.js'
+import { connect } from 'react-redux';
+import { loginEmailAccount } from "../redux/actions/authActions";
 
 
 
-export default function LoginScreen( {navigation}) {
-    return (
-        <ScrollView style={styles.container}>
-            <View>
-             <Text style={styles.log}>Log In</Text>
-            </View>
-            <View>
-                <TextInput  style={styles.underline} placeholderTextColor='#aaaaaa'  placeholder='Username'/>
-                <TextInput style={styles.underline} placeholderTextColor='#aaaaaa' secureTextEntry={true} placeholder='Password'/>
-                <Text style={styles.forgotpassword}>Forgot password?</Text>
-            </View>
-            <View style={styles.button}>
-        <TouchableOpacity onPress={() => {
-          navigation.navigate('Contacts')
-        }} style={styles.buttonIn}>
-         <Text style={styles.buttontext}>Log In</Text>
-         </TouchableOpacity>
-      </View>
+class LoginScreen extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            email: "",
+            password: "",
             
-            <View style={styles.DonthaveanAccountContainer}>
+        }
+    }
+    handleUpdateState = (name, value) => {
+        this.setState({
+            [name]: value
+        })
+    }
+    handleOnSubmit = () => {
+       
+        this.props.loginEmailAccount(this.state.email, this.state.password)
+}
+  render() {
 
-                <Text style={styles.NoAccountText}>Don't have an account?</Text>
+    const { navigation,auth } = this.props
+    return (
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        <View>
+          <Text style={styles.log}>Log In</Text>
+        </View>
+        <View>
+          {auth.error.login && (
+            <Text style={{ color: "red" }}>{auth.error.login}</Text>
+            )}
+          <TextInput
+            style={styles.underline}
+            placeholderTextColor='#aaaaaa'
+            placeholder='Email'
+            value={this.state.email}
+            onChangeText={(text) => { this.handleUpdateState('email', text) }}
+            
+          />
+          <TextInput
+            style={styles.underline}
+            placeholderTextColor='#aaaaaa'
+            secureTextEntry={true} placeholder='Password'
+            value={this.state.password}
+            onChangeText={(text) => { this.handleUpdateState('password', text) }}
+          />
+          <Text style={styles.forgotpassword}>Forgot password?</Text>
+        </View>
+        <View style={styles.button}>
+          <TouchableOpacity
+            onPress={this.handleOnSubmit}
+            style={styles.buttonIn}>
+            <Text style={styles.buttontext}>Log In</Text>
+          </TouchableOpacity>
+        </View>
+            
+        <View style={styles.DonthaveanAccountContainer}>
+
+          <Text style={styles.NoAccountText}>Don't have an account?</Text>
                 
                 
-                <TouchableOpacity onPress={() => {
-          navigation.navigate('Signup')
-        }} >
-         <Text style={styles.SignUpText}>Sign up</Text>
-         </TouchableOpacity>
+          <TouchableOpacity onPress={() => {
+            navigation.navigate('Signup')
+          }} >
+            <Text style={styles.SignUpText}>Sign up</Text>
+          </TouchableOpacity>
 
-            </View>
+        </View>
 
 
-        </ScrollView>
+      </ScrollView>
     );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -49,10 +87,11 @@ const styles = StyleSheet.create({
     
       },
       log:{
-          marginTop:100,
+          marginTop:140,
           color:"#A66FFE",
-          fontSize:60,
-          marginBottom:50,
+        fontSize: 60,
+          fontWeight:'bold',
+          marginBottom:100,
           
 
 
@@ -62,13 +101,13 @@ const styles = StyleSheet.create({
     
         width:300,
         backgroundColor:'white',
-        borderBottomWidth:1,
+        borderBottomWidth:2,
         borderBottomColor:'#A66FFE',
         marginBottom:7, 
         fontSize: 20,
-        borderRadius:5,
+        borderRadius:7,
         height:50,
-        marginTop: 20,
+        marginTop: 7,
         paddingHorizontal: 25,
         alignSelf:'center'
 
@@ -125,3 +164,10 @@ const styles = StyleSheet.create({
        }
     
 });
+
+const mapStateToProp = (state)=> {
+  return{ auth:state}
+}
+
+
+export default connect(mapStateToProp,{loginEmailAccount})(LoginScreen);

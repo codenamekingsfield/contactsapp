@@ -7,23 +7,18 @@ import LoginScreen from './src/screens/LoginScreen';
 import Contacts from './src/components/Contacts';
 import ProfilepageScreen from './src/screens/ProfilepageScreen';
 import SignupScreen from './src/screens/SignupScreen';
+import { Provider } from 'react-redux';
+import store from './src/redux/store';
+import AppContainer from './src/navigation/navigation'
 
 
 const Stack = createStackNavigator()
 
 export default function App () { 
-    return (
-      <NavigationContainer>
-        <Stack.Navigator>
-
-          <Stack.Screen name='Log In' component={LoginScreen}></Stack.Screen>
-          {/* <Stack.Screen name='Profilepage' component={ProfilepageScreen}></Stack.Screen> */}
-          <Stack.Screen name='Contacts' component={ContactsScreen}></Stack.Screen>
-          <Stack.Screen name='Signup' component={SignupScreen}></Stack.Screen>
-          
-
-        </Stack.Navigator>
-      </NavigationContainer>
+  return (
+      <Provider store={store} >
+      <AppContainer/>
+      </Provider>
     );
 
   }
